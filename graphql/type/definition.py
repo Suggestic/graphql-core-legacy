@@ -489,7 +489,13 @@ class GraphQLEnumType(GraphQLNamedType):
         self.name = name
         self.description = description
 
-        self.values = define_enum_values(self, values)
+        # update `values` to make it read-only, forcing any update to
+        # raise AttributeError
+        self._values = define_enum_values(self, values)
+
+    @property
+    def values(self):
+        return self._values
 
     def get_values(self):
         return self.values
